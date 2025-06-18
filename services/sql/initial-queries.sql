@@ -1,7 +1,12 @@
 -- vehicles tables
 CREATE TABLE IF NOT EXISTS `vehicle_identifier` (
   `vehicle_iden_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `vehicle_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `vehicle_image` LONGBLOB,
+  `vehicle_image_mime` VARCHAR(255) NOT NULL,
+  `vehicle_image_name` VARCHAR(255) NOT NULL,
+  `vehicle_image_size` INT(11) NOT NULL,
+  `vehicle_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `vehicle_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `vehicle_hash` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`vehicle_iden_id`),
   UNIQUE (`vehicle_hash`)
@@ -19,15 +24,22 @@ CREATE TABLE IF NOT EXISTS `vehicle_info` (
   `vehicle_serial` VARCHAR(255) NOT NULL,
   `vehicle_color` VARCHAR(255) NOT NULL,
   `vehicle_total_price` INT(11) NOT NULL,
-  `vehicle_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `vehicle_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `vehicle_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`vehicle_id`),
   FOREIGN KEY (`vehicle_iden_id`) REFERENCES `vehicle_identifier`(`vehicle_iden_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- steel tables
 CREATE TABLE IF NOT EXISTS `steel_identifier` (
   `steel_iden_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `steel_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `steel_image` LONGBLOB,
+  `steel_image_mime` VARCHAR(255) NOT NULL,
+  `steel_image_name` VARCHAR(255) NOT NULL,
+  `steel_image_size` INT(11) NOT NULL,
+  `steel_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `steel_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `steel_hash` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`steel_iden_id`),
   UNIQUE (`steel_hash`)
@@ -42,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `steel_info` (
   `steel_total_price` DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (`steel_id`),
   FOREIGN KEY (`steel_iden_id`) REFERENCES `steel_identifier`(`steel_iden_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- Company tables 
@@ -56,7 +69,8 @@ CREATE TABLE IF NOT EXISTS `company_roles` (
 CREATE TABLE IF NOT EXISTS `admin` (
   `admin_id` INT(11) NOT NULL AUTO_INCREMENT,
   `admin_email` VARCHAR(255) NOT NULL,
-  `added_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`admin_id`), 
   UNIQUE (`admin_email`)
 ) ENGINE=InnoDB;
@@ -69,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `admin_info` (
   `admin_phone` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`admin_info_id`),
   FOREIGN KEY (`admin_id`) REFERENCES `admin`(`admin_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `admin_pass` (
@@ -77,6 +92,7 @@ CREATE TABLE IF NOT EXISTS `admin_pass` (
   `admin_password_hashed` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`admin_pass_id`),
   FOREIGN KEY (`admin_id`) REFERENCES `admin`(`admin_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `admin_role` (
@@ -84,24 +100,26 @@ CREATE TABLE IF NOT EXISTS `admin_role` (
   `admin_id` INT(11) NOT NULL,
   `company_role_id` INT(11) NOT NULL,
   PRIMARY KEY (`admin_role_id`),
-  FOREIGN KEY (`admin_id`) REFERENCES `admin`(`admin_id`),
+  FOREIGN KEY (`admin_id`) REFERENCES `admin`(`admin_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`company_role_id`) REFERENCES `company_roles`(`company_role_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- Add the roles to the database 
-INSERT INTO `company_roles` (`company_role_name`)
-VALUES ('Employee'), ('Manager'), ('Admin');
+INSERT IGNORE INTO `company_roles` (`company_role_id`, `company_role_name`)
+VALUES (1, 'Employee'), (2, 'Manager'), (3, 'Admin');
 
 -- This is the admin account 
-INSERT INTO `admin` (`admin_email`)
-VALUES ('admin@admin.com');
+INSERT IGNORE INTO `admin` (`admin_id`, `admin_email`)
+VALUES (1, 'admin@admin.com');
 
-INSERT INTO `admin_info` (`admin_id`, `admin_first_name`, `admin_last_name`, `admin_phone`)
-VALUES (1, 'Admin', 'Admin', '555-555-5555'); 
+INSERT IGNORE INTO `admin_info` (`admin_info_id`, `admin_id`, `admin_first_name`, `admin_last_name`, `admin_phone`)
+VALUES (1, 1, 'Admin', 'Admin', '555-555-5555'); 
 
 -- Password is "123456"
-INSERT INTO `admin_pass` (`admin_id`, `admin_password_hashed`)
-VALUES (1, '$2b$10$B6yvl4hECXploM.fCDbXz.brkhmgqNlawh9ZwbfkFX.F3xrs.15Xi');  
+INSERT IGNORE INTO `admin_pass` (`admin_pass_id`, `admin_id`, `admin_password_hashed`)
+VALUES (1, 1, '$2b$10$B6yvl4hECXploM.fCDbXz.brkhmgqNlawh9ZwbfkFX.F3xrs.15Xi');  
 
-INSERT INTO `admin_role` (`admin_id`, `company_role_id`)
-VALUES (1, 3);
+INSERT IGNORE INTO `admin_role` (`admin_role_id`, `admin_id`, `company_role_id`)
+VALUES (1, 1, 3);

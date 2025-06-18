@@ -17,6 +17,7 @@
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.1",
+    "react-router-dom": "^7.6.2",
     "sanitize": "^2.1.2",
     "uuid": "^11.1.0"
   }

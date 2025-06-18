@@ -4,7 +4,15 @@ const express = require('express');
 const router = express.Router();
 // Import the install router 
 const installRouter = require('./install.routes');
+// Import the admin routes 
+const adminRouter = require('./admin.routes');
+// Import the login routes 
+const loginRoutes = require("./login.routes");
 // Add the install router to the main router 
 router.use(installRouter);
+// Add the admin routes to the main router 
+router.use(adminRouter);
+// Add the login routes to the main router
+router.use(loginRoutes);
 // Export the router
 module.exports = router; 
