@@ -9,13 +9,11 @@ const authMiddleware = require("../middlewares/auth.middlewares");
 // Create a route to handle the add admin request on post
 router.post(
   "/api/admin",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
   adminController.createAdmin
 );
 // Create a route to handle the get all admins request on get
 router.get(
   "/api/admins",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
   adminController.getAllAdmins
 ); 
 // Export the router
