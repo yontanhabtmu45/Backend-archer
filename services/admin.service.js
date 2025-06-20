@@ -35,9 +35,10 @@ async function createAdmin(admin) {
     const admin_id = rows.insertId;
     // Insert the remaining data in to the admin_info, admin_pass, and admin_role tables
     const query2 =
-      "INSERT INTO admin_info (admin_id, admin_first_name, admin_last_name, admin_phone) VALUES (?, ?, ?, ?)";
+      "INSERT INTO admin_info (admin_id, admin_user_name, admin_first_name, admin_last_name, admin_phone) VALUES (?, ?, ?, ?, ?)";
     const rows2 = await conn.query(query2, [
       admin_id,
+      admin.admin_user_name,
       admin.admin_first_name,
       admin.admin_last_name,
       admin.admin_phone,

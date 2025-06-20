@@ -5,12 +5,12 @@ require('dotenv').config();
 // Import the sanitizer module 
 // const sanitize = require('sanitize');
 // Import the CORS module 
-// const cors = require('cors');
+const cors = require('cors');
 // Set up the CORS options to allow requests from our front-end 
-// const corsOptions = {
-//   origin: '*',
-//   optionsSuccessStatus: 200
-// };
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200
+};
 // Create a variable to hold our port number 
 const port = process.env.PORT;
 // Import the router 
@@ -18,7 +18,7 @@ const router = require('./routes');
 // Create the webserver 
 const app = express();
 // Add the CORS middleware
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 // Add the express.json middleware to the application
 app.use(express.json());
 // Add the sanitizer to the express middleware 

@@ -2,9 +2,6 @@
 CREATE TABLE IF NOT EXISTS `vehicle_identifier` (
   `vehicle_iden_id` INT(11) NOT NULL AUTO_INCREMENT,
   `vehicle_image` LONGBLOB,
-  `vehicle_image_mime` VARCHAR(255) NOT NULL,
-  `vehicle_image_name` VARCHAR(255) NOT NULL,
-  `vehicle_image_size` INT(11) NOT NULL,
   `vehicle_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `vehicle_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `vehicle_hash` VARCHAR(255) NOT NULL,
@@ -35,9 +32,6 @@ CREATE TABLE IF NOT EXISTS `vehicle_info` (
 CREATE TABLE IF NOT EXISTS `steel_identifier` (
   `steel_iden_id` INT(11) NOT NULL AUTO_INCREMENT,
   `steel_image` LONGBLOB,
-  `steel_image_mime` VARCHAR(255) NOT NULL,
-  `steel_image_name` VARCHAR(255) NOT NULL,
-  `steel_image_size` INT(11) NOT NULL,
   `steel_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `steel_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `steel_hash` VARCHAR(255) NOT NULL,
@@ -78,6 +72,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 CREATE TABLE IF NOT EXISTS `admin_info` (
   `admin_info_id` INT(11) NOT NULL AUTO_INCREMENT,
   `admin_id` INT(11) NOT NULL,
+  `admin_user_name` VARCHAR(255) NOT NULL,
   `admin_first_name` VARCHAR(255) NOT NULL,
   `admin_last_name` VARCHAR(255) NOT NULL,
   `admin_phone` VARCHAR(255) NOT NULL,
@@ -108,14 +103,14 @@ CREATE TABLE IF NOT EXISTS `admin_role` (
 
 -- Add the roles to the database 
 INSERT IGNORE INTO `company_roles` (`company_role_id`, `company_role_name`)
-VALUES (1, 'Employee'), (2, 'Manager'), (3, 'Admin');
+VALUES  (2, 'Manager'), (3, 'Admin');
 
 -- This is the admin account 
 INSERT IGNORE INTO `admin` (`admin_id`, `admin_email`)
 VALUES (1, 'admin@admin.com');
 
-INSERT IGNORE INTO `admin_info` (`admin_info_id`, `admin_id`, `admin_first_name`, `admin_last_name`, `admin_phone`)
-VALUES (1, 1, 'Admin', 'Admin', '555-555-5555'); 
+INSERT IGNORE INTO `admin_info` (`admin_info_id`, `admin_id`, `admin_user_name`, `admin_first_name`, `admin_last_name`, `admin_phone`)
+VALUES (1, 1, 'testAdmin', 'Admin', 'Admin', '555-555-5555'); 
 
 -- Password is "123456"
 INSERT IGNORE INTO `admin_pass` (`admin_pass_id`, `admin_id`, `admin_password_hashed`)
