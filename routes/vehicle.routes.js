@@ -4,12 +4,17 @@ const vehicleController = require("../controllers/vehicle.controller");
 const authMiddleware = require("../middlewares/auth.middlewares");
 
 // Create a route to handle the add vehicle request on post
-router.post("/api/vehicle", vehicleController.createVehicle);
+router.post(
+  "/api/vehicle",
+  [authMiddleware.verifyToken],
+  vehicleController.createVehicle
+);
 
 // Create a route to handle the get all vehicles request on get
 router.get(
-    "/api/vehicles",
-    vehicleController.getAllVehicles
+  "/api/vehicles",
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  vehicleController.getAllVehicles
 );
 
 // Export the router

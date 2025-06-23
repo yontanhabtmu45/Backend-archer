@@ -152,6 +152,8 @@ async function deleteVehicleById(vehicle_id) {
     }
 }
 
+
+
 // Export the functions
 module.exports = {
     checkIfVehicleExist,
