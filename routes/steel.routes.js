@@ -9,7 +9,6 @@ const authMiddleware = require("../middlewares/auth.middlewares");
 // Create a route to handle the add steel request on post
 router.post(
     "/api/steel",
-    [authMiddleware.verifyToken, authMiddleware.isAdmin],
     steelController.createSteel
 );
 
@@ -19,6 +18,25 @@ router.get(
     [authMiddleware.verifyToken, authMiddleware.isAdmin],
     steelController.getAllSteels
 );
+
+// Get steel by ID
+router.get(
+    "/api/steel/:id",
+    [authMiddleware.verifyToken, authMiddleware.isAdmin],
+    steelController.getSteelById
+  );
+  
+  // Update steel by ID
+  router.put(
+    "/api/steel/:id",
+    steelController.updateSteel
+  );
+  
+  // Delete steel by ID
+  router.delete(
+    "/api/steel/:id",
+    steelController.deleteSteel
+  );
 
 // Export the router
 module.exports = router;

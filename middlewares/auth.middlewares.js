@@ -9,11 +9,15 @@ const adminService = require("../services/admin.service");
 // A function to verify the token received from the frontend 
 const verifyToken = async (req, res, next) => {
   let token = req.headers["x-access-token"];
-  if (!token) {
-    return res.status(403).send({
-      status: "fail",
-      message: "No token provided!"
-    });
+
+  // Also check for Authorization header (Bearer token)
+  if (!token && req.headers["authorization"]) {
+    const authHeader = req.headers["authorization"];
+    if (authHeader.startsWith("Bearer ")) {
+      token = authHeader.slice(7, authHeader.length);
+    } else {
+      token = authHeader;
+    }
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {

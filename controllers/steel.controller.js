@@ -1,14 +1,15 @@
 // Import steel service
-const steelService = "../services/steel.service";
+const steelService = require("../services/steel.service");
 // create the added steel controller
 async function createSteel(req, res, next) {
+  const steel_hash = req.body;
   // check if the steel already exists in the database
-  const steelExists = await steelService.checkIfSteelExist(req.body.steel_id);
+  const steelExists = await steelService.checkIfSteelExistByHash(steel_hash);
 
   // If steel exists, send a response to the client
   if (steelExists) {
     res.status(400).json({
-      error: "This steel already exists in the database!",
+      error: "This vehicle already exists in the database!",
     });
   } else {
     try {
@@ -21,13 +22,15 @@ async function createSteel(req, res, next) {
         });
       } else {
         res.status(200).json({
-          status: "true",
+          status: "success",
+          data: steel,
         });
       }
-    } catch (error) {
-      console.log(error);
-      res.status(400).json({
-        error: "Something went wrong!",
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: "fail",
+        message: "Server error while adding steel.",
       });
     }
   }
@@ -48,7 +51,61 @@ async function getAllSteels(req, res, next) {
   }
 }
 
-module.exports = {
-    createSteel,
-    getAllSteels
+// Get steel by ID
+async function getSteelById(req, res, next) {
+  const { id } = req.params;
+  try {
+    const steel = await steelService.getSteelById(id);
+    if (!steel) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Steel not found" });
+    }
+    res.status(200).json({ status: "success", data: steel });
+  } catch (err) {
+    res.status(500).json({ status: "fail", message: "Server error" });
+  }
 }
+
+// Update steel by ID
+async function updateSteel(req, res, next) {
+  const { id } = req.params;
+  const updateData = req.body;
+  try {
+    const updatedSteel = await steelService.updateSteelById(id, updateData);
+    if (!updatedSteel) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Steel not found or not updated" });
+    }
+    return res.status(200).json({ message: "Steel updated successfully" });
+  } catch (err) {
+    res.status(500).json({ status: "fail", message: "Server error" });
+  }
+}
+
+// Delete steel by ID
+async function deleteSteel(req, res, next) {
+  const { id } = req.params;
+  try {
+    const deleted = await steelService.deleteSteel(id);
+    if (!deleted) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Steel not found or not deleted" });
+    }
+    res
+      .status(200)
+      .json({ status: "success", message: "Steel deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ status: "fail", message: "Server error" });
+  }
+}
+
+module.exports = {
+  createSteel,
+  getAllSteels,
+  getSteelById,
+  updateSteel,
+  deleteSteel,
+};

@@ -79,10 +79,43 @@ async function getAllAdmins() {
   return rows;
 }
 
+// Update admin by ID
+async function updateAdminById(id, updateData) {
+  // Update admin_info
+  const query =
+    "UPDATE admin_info SET admin_user_name = ?, admin_first_name = ?, admin_last_name = ?, admin_phone = ? WHERE admin_id = ?";
+  const rows = await conn.query(query, [
+    updateData.admin_user_name,
+    updateData.admin_first_name,
+    updateData.admin_last_name,
+    updateData.admin_phone,
+    id,
+  ]);
+  if (rows.affectedRows === 1) {
+    return true;
+  }
+  return false;
+}
+
+// Delete admin by ID
+async function deleteAdminById(id) {
+  const query = "DELETE FROM admin WHERE admin_id = ?";
+  const rows = await conn.query(query, [id]);
+
+  const query2 = "DELETE FROM admin_"
+
+  if (rows.affectedRows === 1) {
+    return true;
+  }
+  return false;
+}
+
 // Export the functions for use in the controller
 module.exports = {
   checkIfAdminExists,
   createAdmin,
   getAdminByEmail,
-  getAllAdmins
+  getAllAdmins,
+  updateAdminById,
+  deleteAdminById
 };

@@ -16,5 +16,23 @@ router.get(
   "/api/admins",
   adminController.getAllAdmins
 ); 
+
+// Get admin by ID
+router.get(
+  "/api/admin/:id",
+  adminController.getAdminById
+);
+
+// Update admin by ID
+router.put(
+  "/api/admin/:id", 
+  adminController.updateAdminById
+);
+
+// Delete admin by ID
+router.delete(
+  "/api/admin/:id",
+  adminController.deleteAdminById
+);
 // Export the router
 module.exports = router;

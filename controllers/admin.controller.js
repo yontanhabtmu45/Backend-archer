@@ -49,8 +49,81 @@ async function getAllAdmins(req, res, next) {
   }
 }
 
+// Get admin by ID
+async function getAdminById(req, res, next) {
+  const { id } = req.params;
+  try {
+    const admin = await adminService.getAdminById(id);
+    if (!admin) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Admin not found"
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      data: admin
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: "Server error"
+    });
+  }
+}
+
+// Update admin by ID
+async function updateAdminById(req, res, next) {
+  const { id } = req.params;
+  const updateData = req.body;
+  try {
+    const updatedAdmin = await adminService.updateAdminById(id, updateData);
+    if (!updatedAdmin) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Admin not found or not updated"
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      data: updatedAdmin
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: "Server error"
+    });
+  }
+}
+
+// Delete admin by ID
+async function deleteAdminById(req, res, next) {
+  const { id } = req.params;
+  try {
+    const deleted = await adminService.deleteAdminById(id);
+    if (!deleted) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Admin not found or not deleted"
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      message: "Admin deleted successfully"
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: "Server error"
+    });
+  }
+}
+
 // Export the createAdmin controller
 module.exports = {
   createAdmin,
   getAllAdmins,
+  getAdminById,
+  updateAdminById,
+  deleteAdminById,
 };
