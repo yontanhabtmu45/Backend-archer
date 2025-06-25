@@ -76,30 +76,37 @@ async function getSteelById(id) {
 }
 
 // a function to update a steel
-async function updateSteelById(id, steel) {
-  const query =
-    "UPDATE steel_info SET steel_type = ?,  steel_weight = ?, steel_price_per_ton, steel_total_price WHERE steel_iden_id = ?";
-  const rows = await conn.query(query, [
-    steel.steel_type,
-    steel.steel_weight,
-    steel.steel_price_per_ton,
-    steel.steel_total_price,
-    id,
-  ]);
+async function updateSteelById(steel_iden_id, steel) {
+  try {
+    // Update steel_info by steel_iden_id
+    const query1 =
+      "UPDATE steel_info SET steel_type = ?, steel_weight = ?, steel_price_per_ton = ?, steel_total_price = ? WHERE steel_iden_id = ?";
+    const rows1 = await conn.query(query1, [
+      steel.steel_type,
+      steel.steel_weight,
+      steel.steel_price_per_ton,
+      steel.steel_total_price,
+      steel_iden_id,
+    ]);
 
-  const query2 =
-    "UPDATE steel_identifier SET steel_image = ? WHERE steel_iden_id = ?";
-  const rows2 = await conn.query(query2, [
-    steel.steel_image,
-    id,
-  ]);
+    // Optionally update steel_identifier if steel_image is provided
+    if (steel.steel_image) {
+      const query2 =
+        "UPDATE steel_identifier SET steel_image = ? WHERE steel_iden_id = ?";
+      await conn.query(query2, [
+        steel.steel_image,
+        steel_iden_id,
+      ]);
+    }
 
-  if (rows.affectedRows !== 1 || rows2.affectedRows !== 1) {
+    if (rows1.affectedRows < 1) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("Error updating steel:", error);
     return false;
   }
-  // If both updates were successful, return true
-  console.log("Steel updated successfully");
-  return true
 }
 
 // a function to delete a steel

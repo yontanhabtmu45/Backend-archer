@@ -29,7 +29,7 @@ router.get(
   // Update steel by ID
   router.put(
     "/api/steel/:id",
-    steelController.updateSteel
+    steelController.updateSteelById
   );
   
   // Delete steel by ID

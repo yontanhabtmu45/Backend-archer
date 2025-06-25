@@ -68,7 +68,7 @@ async function getSteelById(req, res, next) {
 }
 
 // Update steel by ID
-async function updateSteel(req, res, next) {
+async function updateSteelById(req, res, next) {
   const { id } = req.params;
   const updateData = req.body;
   try {
@@ -106,6 +106,6 @@ module.exports = {
   createSteel,
   getAllSteels,
   getSteelById,
-  updateSteel,
+  updateSteelById,
   deleteSteel,
 };
