@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS `steel_info` (
   `steel_weight` INT(11) NOT NULL,
   `steel_price_per_ton` DECIMAL(10,2) NOT NULL,
   `steel_total_price` DECIMAL(10,2) NOT NULL,
+  `steel_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `steel_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`steel_id`),
   FOREIGN KEY (`steel_iden_id`) REFERENCES `steel_identifier`(`steel_iden_id`)
     ON DELETE CASCADE ON UPDATE CASCADE

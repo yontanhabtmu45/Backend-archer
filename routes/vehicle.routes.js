@@ -12,14 +12,12 @@ router.post(
 // Create a route to handle the get all vehicles request on get
 router.get(
   "/api/vehicles",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
   vehicleController.getAllVehicles
 );
 
 // Get vehicle by ID
 router.get(
   "/api/vehicle/:id",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
   vehicleController.getVehicleById
 );
 

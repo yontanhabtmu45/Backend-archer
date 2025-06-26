@@ -7,13 +7,13 @@ const { v4: uuidv4 } = require("uuid");
 
 // a function to check if a steel already exists by steel_hash
 async function checkIfSteelExistByHash(steel_hash) {
-    // if (!steel_hash) return false;
-    const query = "SELECT * FROM steel_identifier WHERE steel_hash = ?";
-    const rows = await conn.query(query, [steel_hash]);
-    if (rows.length > 0) {
-        return true;
-      }
-      return false;
+  // if (!steel_hash) return false;
+  const query = "SELECT * FROM steel_identifier WHERE steel_hash = ?";
+  const rows = await conn.query(query, [steel_hash]);
+  if (rows.length > 0) {
+    return true;
+  }
+  return false;
 }
 
 // a function to create a new steel
@@ -41,11 +41,11 @@ async function createSteel(steel) {
     ]);
 
     if (rows.affectedRows !== 1) {
-        return false;
-      }
+      return false;
+    }
 
     createdSteel = {
-      steel_iden_id
+      steel_iden_id,
     };
 
     return createdSteel;
@@ -62,17 +62,18 @@ async function getAllSteels() {
   const query = "SELECT * FROM steel_info";
   const rows = await conn.query(query);
   return rows;
-
 }
 
 // a function to get a steel by id
 async function getSteelById(id) {
-  const query = "SELECT * FROM steel_info WHERE steel_id = ?";
+  const query = `
+      SELECT *
+      FROM steel_info
+      INNER JOIN steel_identifier ON steel_info.steel_iden_id = steel_identifier.steel_iden_id
+      WHERE steel_info.steel_iden_id = ?
+    `;
   const rows = await conn.query(query, [id]);
-  if (rows.length > 0) {
-    return rows[0];
-  }
-  return false;
+  return rows[0] || null;
 }
 
 // a function to update a steel
@@ -93,10 +94,7 @@ async function updateSteelById(steel_iden_id, steel) {
     if (steel.steel_image) {
       const query2 =
         "UPDATE steel_identifier SET steel_image = ? WHERE steel_iden_id = ?";
-      await conn.query(query2, [
-        steel.steel_image,
-        steel_iden_id,
-      ]);
+      await conn.query(query2, [steel.steel_image, steel_iden_id]);
     }
 
     if (rows1.affectedRows < 1) {
@@ -110,8 +108,8 @@ async function updateSteelById(steel_iden_id, steel) {
 }
 
 // a function to delete a steel
-async function deleteSteel(id) {
-  const query = "DELETE FROM steel_info WHERE steel_id = ?";
+async function deleteSteelById(id) {
+  const query = "DELETE FROM steel_identifier WHERE steel_iden_id = ?";
   const rows = await conn.query(query, [id]);
 
   if (rows.affectedRows === 1) {
@@ -127,5 +125,5 @@ module.exports = {
   getAllSteels,
   getSteelById,
   updateSteelById,
-  deleteSteel,
+  deleteSteelById,
 };

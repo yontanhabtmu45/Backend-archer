@@ -13,9 +13,9 @@ const { v4: uuidv4 } = require("uuid");
 //     return rows.length > 0;
 // }
 
-// Check if a vehicle already exists by a unique field 
+// Check if a vehicle already exists by a unique field
 async function checkIfVehicleExistBySerial(vehicle_serial) {
-//   if (!vehicle_serial) return false;
+  //   if (!vehicle_serial) return false;
   const query = "SELECT * FROM vehicle_info WHERE vehicle_serial = ?";
   const rows = await conn.query(query, [vehicle_serial]);
   if (rows.length > 0) {
@@ -82,69 +82,60 @@ async function getAllVehicles() {
   }
 }
 
-// a function to get vehicle by id
-async function getVehicleById(vehicle_id) {
-  try {
-    const query = "SELECT * FROM vehicle_info WHERE vehicle_id = ?";
-    const rows = await conn.query(query, [vehicle_id]);
-    return rows.length > 0 ? rows[0] : null;
-  } catch (error) {
-    console.error("Error fetching vehicle by ID:", error);
-    return res.status(500).json({ message: "Error fetching vehicle by ID" });
-  }
+// a function to get vehicle by iden_id with all related info
+async function getVehicleById(id) {
+  // try {
+  const query = `
+      SELECT *
+      FROM vehicle_info
+      INNER JOIN vehicle_identifier ON vehicle_info.vehicle_iden_id = vehicle_identifier.vehicle_iden_id
+      WHERE vehicle_info.vehicle_iden_id = ?
+    `;
+  const rows = await conn.query(query, [id]);
+  return rows[0] || null;
 }
 
 // a function to update vehicle by id
 async function updateVehicleById(id, vehicle) {
-  try {
-    const query =
-      "UPDATE vehicle_info SET vehicle_make = ?, vehicle_model = ?, vehicle_year = ?, vehicle_type = ?, vehicle_mileage = ?, vehicle_tag = ?, vehicle_serial = ?, vehicle_color = ?, vehicle_total_price = ? WHERE vehicle_iden_id = ?";
-    const rows = await conn.query(query, [
-      vehicle.vehicle_make,
-      vehicle.vehicle_model,
-      vehicle.vehicle_year,
-      vehicle.vehicle_type,
-      vehicle.vehicle_mileage,
-      vehicle.vehicle_tag,
-      vehicle.vehicle_serial,
-      vehicle.vehicle_color,
-      vehicle.vehicle_total_price,
-      id,
-    ]);
+  const query =
+    "UPDATE vehicle_info SET vehicle_make = ?, vehicle_model = ?, vehicle_year = ?, vehicle_type = ?, vehicle_mileage = ?, vehicle_tag = ?, vehicle_serial = ?, vehicle_color = ?, vehicle_total_price = ? WHERE vehicle_iden_id = ?";
+  const rows = await conn.query(query, [
+    vehicle.vehicle_make,
+    vehicle.vehicle_model,
+    vehicle.vehicle_year,
+    vehicle.vehicle_type,
+    vehicle.vehicle_mileage,
+    vehicle.vehicle_tag,
+    vehicle.vehicle_serial,
+    vehicle.vehicle_color,
+    vehicle.vehicle_total_price,
+    id,
+  ]);
 
-    const query2 =
-      "UPDATE vehicle_identifier SET vehicle_image = ? WHERE vehicle_iden_id = ?";
-    const rows2 = await conn.query(query2, [
-      vehicle.vehicle_image,
-      id,
-    ]);
-    if (rows.affectedRows !== 1 || rows2.affectedRows !== 1) {
-      return false;
-    }
-    // If both updates were successful, return true
-    console.log("Vehicle updated successfully");
-    return true;
-
-    // return rows.affectedRows === 1;
-  } catch (error) {
-    console.error("Error updating vehicle:", error);
+  const query2 =
+    "UPDATE vehicle_identifier SET vehicle_image = ? WHERE vehicle_iden_id = ?";
+  const rows2 = await conn.query(query2, [vehicle.vehicle_image, id]);
+  if (rows.affectedRows !== 1 || rows2.affectedRows !== 1) {
     return false;
   }
+  return true;
+
+  // return rows.affectedRows === 1;
 }
 
 // a function to delete vehicle by id
 async function deleteVehicleById(id) {
   const query = "DELETE FROM vehicle_identifier WHERE vehicle_iden_id = ?";
-    const result = await conn.query(query, [id]);
-    if (result.affectedRows === 1) {
-      return true;
-    }
-    return false;
+  const rows = await conn.query(query, [id]);
+  if (rows.affectedRows === 1) {
+    return true;
+  }
+  return false;
 }
 
 // Export the functions
 module.exports = {
-//   checkIfVehicleExistById,
+  //   checkIfVehicleExistById,
   checkIfVehicleExistBySerial,
   createVehicle,
   getAllVehicles,

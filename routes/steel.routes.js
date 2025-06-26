@@ -15,14 +15,12 @@ router.post(
 // Create a route to handle the get all steels request on get
 router.get(
     "/api/steels",
-    [authMiddleware.verifyToken, authMiddleware.isAdmin],
     steelController.getAllSteels
 );
 
 // Get steel by ID
 router.get(
     "/api/steel/:id",
-    [authMiddleware.verifyToken, authMiddleware.isAdmin],
     steelController.getSteelById
   );
   
@@ -35,7 +33,7 @@ router.get(
   // Delete steel by ID
   router.delete(
     "/api/steel/:id",
-    steelController.deleteSteel
+    steelController.deleteSteelById
   );
 
 // Export the router

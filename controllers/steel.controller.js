@@ -85,10 +85,10 @@ async function updateSteelById(req, res, next) {
 }
 
 // Delete steel by ID
-async function deleteSteel(req, res, next) {
+async function deleteSteelById(req, res, next) {
   const { id } = req.params;
   try {
-    const deleted = await steelService.deleteSteel(id);
+    const deleted = await steelService.deleteSteelById(id);
     if (!deleted) {
       return res
         .status(404)
@@ -107,5 +107,5 @@ module.exports = {
   getAllSteels,
   getSteelById,
   updateSteelById,
-  deleteSteel,
+  deleteSteelById,
 };

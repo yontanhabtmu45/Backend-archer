@@ -63,6 +63,21 @@ async function createAdmin(admin) {
   return createdAdmin;
 }
 
+// A function to get admin by id
+async function getAdminById(admin_id) {
+  const query = `
+    SELECT * FROM admin
+    INNER JOIN admin_info ON admin.admin_id = admin_info.admin_id
+    INNER JOIN admin_pass ON admin.admin_id = admin_pass.admin_id 
+    INNER JOIN admin_role ON admin.admin_id = admin_role.admin_id
+    INNER JOIN company_roles ON admin_role.company_role_id = company_roles.company_role_id
+    WHERE admin.admin_id = ?
+  `;
+  const rows = await conn.query(query, [admin_id]);
+  return rows[0] || null;
+}
+
+
 // A function to get admin by email
 async function getAdminByEmail(admin_email) {
   const query =
@@ -84,14 +99,14 @@ async function updateAdminById(id, updateData) {
   // Update admin_info
   const query =
     "UPDATE admin_info SET admin_user_name = ?, admin_first_name = ?, admin_last_name = ?, admin_phone = ? WHERE admin_id = ?";
-  const rows = await conn.query(query, [
+  const result = await conn.query(query, [
     updateData.admin_user_name,
     updateData.admin_first_name,
     updateData.admin_last_name,
     updateData.admin_phone,
     id,
   ]);
-  if (rows.affectedRows === 1) {
+  if (result.affectedRows === 1) {
     return true;
   }
   return false;
@@ -102,7 +117,7 @@ async function deleteAdminById(id) {
   const query = "DELETE FROM admin WHERE admin_id = ?";
   const rows = await conn.query(query, [id]);
 
-  const query2 = "DELETE FROM admin_"
+  // const query2 = "DELETE FROM admin_"
 
   if (rows.affectedRows === 1) {
     return true;
@@ -114,6 +129,7 @@ async function deleteAdminById(id) {
 module.exports = {
   checkIfAdminExists,
   createAdmin,
+  getAdminById,
   getAdminByEmail,
   getAllAdmins,
   updateAdminById,
