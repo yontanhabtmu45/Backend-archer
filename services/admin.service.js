@@ -44,7 +44,7 @@ async function createAdmin(admin) {
       admin.admin_phone,
     ]);
     const query3 =
-      "INSERT INTO admin_pass (admin_id, admin_password_hashed) VALUES (?, ?)";
+      "INSERT INTO admin_pass (admin_id, admin_password_hashed	) VALUES (?, ?)";
     const rows3 = await conn.query(query3, [admin_id, hashedPassword]);
     const query4 =
       "INSERT INTO admin_role (admin_id, company_role_id) VALUES (?, ?)";
