@@ -59,7 +59,18 @@ async function createSteel(steel) {
 
 // a function to get all steels
 async function getAllSteels() {
-  const query = "SELECT * FROM steel_info";
+  const query = `SELECT 
+      si.steel_id,
+      si.steel_iden_id,
+      si.steel_type,
+      si.steel_weight,
+      si.steel_price_per_ton,
+      si.steel_total_price,
+      si.steel_added_date,
+      si.steel_updated_date,
+      sident.steel_image
+    FROM steel_info si
+    INNER JOIN steel_identifier sident ON si.steel_iden_id = sident.steel_iden_id`;
   const rows = await conn.query(query);
   return rows;
 }

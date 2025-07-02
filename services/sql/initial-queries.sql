@@ -1,7 +1,7 @@
 -- vehicles tables
 CREATE TABLE IF NOT EXISTS `vehicle_identifier` (
   `vehicle_iden_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `vehicle_image` LONGBLOB,
+  `vehicle_image` VARCHAR(255) NOT NULL,
   `vehicle_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `vehicle_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `vehicle_hash` VARCHAR(255) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `vehicle_info` (
 -- steel tables
 CREATE TABLE IF NOT EXISTS `steel_identifier` (
   `steel_iden_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `steel_image` LONGBLOB,
+  `steel_image` VARCHAR(255) NOT NULL,
   `steel_added_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `steel_updated_date` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `steel_hash` VARCHAR(255) NOT NULL,

@@ -5,13 +5,13 @@ const bcrypt = require("bcrypt");
 // Import the uuid module
 const { v4: uuidv4 } = require("uuid");
 
-// // a function to check if a vehicle exists in the database by vehicle_id
-// async function checkIfVehicleExistById(vehicle_id) {
-//     if (!vehicle_id) return false;
-//     const query = "SELECT * FROM vehicle_info WHERE vehicle_id = ?";
-//     const [rows] = await conn.query(query, [vehicle_id]);
-//     return rows.length > 0;
-// }
+// a function to check if a vehicle exists in the database by vehicle_id
+async function checkIfVehicleExistById(vehicle_id) {
+    if (!vehicle_id) return false;
+    const query = "SELECT * FROM vehicle_info WHERE vehicle_id = ?";
+    const [rows] = await conn.query(query, [vehicle_id]);
+    return rows.length > 0;
+}
 
 // Check if a vehicle already exists by a unique field
 async function checkIfVehicleExistBySerial(vehicle_serial) {
@@ -73,25 +73,53 @@ async function createVehicle(vehicle) {
 // a function to get all vehicles
 async function getAllVehicles() {
   try {
-    const query = "SELECT * FROM vehicle_info";
+    const query = `SELECT 
+      vi.vehicle_id,
+      vi.vehicle_iden_id,
+      vi.vehicle_year,
+      vi.vehicle_make,
+      vi.vehicle_model,
+      vi.vehicle_type,
+      vi.vehicle_mileage,
+      vi.vehicle_tag,
+      vi.vehicle_serial,
+      vi.vehicle_color,
+      vi.vehicle_total_price,
+      vi.vehicle_added_date,
+      viden.vehicle_image
+    FROM vehicle_info vi
+    JOIN vehicle_identifier viden ON vi.vehicle_iden_id = viden.vehicle_iden_id`;
     const rows = await conn.query(query);
     return rows;
   } catch (error) {
     console.error("Error fetching vehicles:", error);
-    return res.status(500).json({ message: "Error fetching vehicles" });
+    // return res.status(500).json({ message: "Error fetching vehicles" });
   }
 }
 
 // a function to get vehicle by iden_id with all related info
-async function getVehicleById(id) {
+async function getVehicleById(vehicle_iden_id) {
   // try {
   const query = `
-      SELECT *
-      FROM vehicle_info
-      INNER JOIN vehicle_identifier ON vehicle_info.vehicle_iden_id = vehicle_identifier.vehicle_iden_id
-      WHERE vehicle_info.vehicle_iden_id = ?
+      SELECT 
+        vi.vehicle_id,
+        vi.vehicle_iden_id,
+        vi.vehicle_year,
+        vi.vehicle_make,
+        vi.vehicle_model,
+        vi.vehicle_type,
+        vi.vehicle_mileage,
+        vi.vehicle_tag,
+        vi.vehicle_serial,
+        vi.vehicle_color,
+        vi.vehicle_total_price,
+        vi.vehicle_added_date,
+        viden.vehicle_image
+      FROM vehicle_info vi
+      INNER JOIN vehicle_identifier viden ON vi.vehicle_iden_id = viden.vehicle_iden_id
+      WHERE vi.vehicle_iden_id = ?
     `;
-  const rows = await conn.query(query, [id]);
+  const rows = await conn.query(query, [vehicle_iden_id]);
   return rows[0] || null;
 }
 

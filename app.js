@@ -1,33 +1,48 @@
-// Import the express module 
-const express = require('express');
-// Import the dotenv module and call the config method to load the environment variables
+// Import the query function from the db.config.js file
 require('dotenv').config();
-// Import the sanitizer module 
-const sanitize = require('sanitize');
-// Import the CORS module 
-const cors = require('cors');
-// Set up the CORS options to allow requests from our front-end 
-const corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200
-};
-// Create a variable to hold our port number 
-const port = process.env.PORT;
-// Import the router 
-const router = require('./routes');
-// Create the webserver 
+const conn = require("./config/db.config");
+const express = require("express");
+const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+const sanitize = require("sanitize");
+const router = require("./routes");
 const app = express();
-// Add the CORS middleware
+
+const corsOptions = { origin: "*", optionsSuccessStatus: 200 };
+const port = process.env.PORT;
+
 app.use(cors(corsOptions));
-// Add the express.json middleware to the application
 app.use(express.json());
-// Add the sanitizer to the express middleware 
+app.use(express.static('public'))
 app.use(sanitize.middleware);
-// Add the routes to the application as middleware 
 app.use(router);
-// Start the webserver
-app.listen(port, () => {
-  console.log(`Server running on port: ${port}`);
+// Multer setup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "_" + Date.now()  + path.extname(file.originalname));
+  },
 });
-// Export the webserver for use in the application 
+const upload = multer({ storage: storage });
+
+// Image upload endpoint (for vehicles and steels)
+app.post("/api/upload", upload.single("image"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  // Return the relative path to save in DB
+  res.json({ imagePath: `${req.file.filename}` });
+  // const image = req.file.filename;
+  // const sql = "UPDATE vehicle_identifier SET vehicle_image = ?"
+  // conn.query(sql, [image], (err, result) => {
+  //   if (err) return res.status(400).json({ error: 'No file uploaded' });
+  //   return res.json({ Status: "success" });
+
+  // })
+  console.log(req.file);
+});
+
+app.listen(port, () => console.log(`Server running on port ${port}`));
+// Export the webserver for use in the application
 module.exports = app;
