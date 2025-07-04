@@ -23,7 +23,8 @@ async function createVehicle(req, res, next) {
         });
       } else {
         res.status(200).json({
-          status: "true",
+          status: "success",
+          data: vehicle,
         });
       }
     } catch (error) {

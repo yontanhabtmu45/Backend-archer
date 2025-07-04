@@ -66,6 +66,7 @@ async function createVehicle(vehicle) {
     return createdVehicle;
   } catch (error) {
     console.error("Error creating vehicle:", error);
+    return false;
     // return res.status(500).json({ message: "Error creating vehicle" });
   }
 }
